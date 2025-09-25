@@ -14,7 +14,14 @@ const getActivityDetail = (id: string) => {
   if (!activity) return null
   
   // 根据活动类型生成不同的观测点和流程
-  const getObservationPoints = (categories: string[]) => {
+  const getObservationPoints = (activity: any) => {
+    // 如果活动有保存的观测点，直接使用
+    if (activity.observationPoints && activity.observationPoints.length > 0) {
+      return activity.observationPoints
+    }
+    
+    // 否则根据活动类型生成默认观测点（保持向后兼容）
+    const categories = activity.categories || []
     if (categories.includes('MORAL_EDUCATION')) {
       return ['2', '3', '4'] // 品德发展相关观测点
     } else if (categories.includes('PHYSICAL_HEALTH')) {
@@ -24,6 +31,12 @@ const getActivityDetail = (id: string) => {
   }
   
   const getProcessSteps = (activity: any) => {
+    // 如果活动有保存的流程步骤，直接使用
+    if (activity.processSteps && activity.processSteps.length > 0) {
+      return activity.processSteps
+    }
+    
+    // 否则根据活动类型生成默认流程（保持向后兼容）
     if (activity.title === '文明班级评比') {
       return [
         {
@@ -186,7 +199,7 @@ const getActivityDetail = (id: string) => {
     location: activity.location,
     responsibleTeacher: activity.creator,
     createdBy: activity.createdBy, // 添加创建者字段
-    observationPoints: getObservationPoints(activity.categories),
+    observationPoints: getObservationPoints(activity),
     description: activity.description,
     coverImage: activity.coverImage,
     activityDirection: activity.activityDirection,
@@ -569,7 +582,7 @@ export default function ActivityDetailPage({ params }: { params: { id: string } 
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">综评观测点</h3>
               <div className="space-y-3">
-                {mockActivityDetail.observationPoints?.map((pointId, index) => {
+                {mockActivityDetail.observationPoints?.map((pointId: string, index: number) => {
                   const point = getObservationPointById(pointId)
                   if (!point) return null
                   return (
@@ -600,7 +613,7 @@ export default function ActivityDetailPage({ params }: { params: { id: string } 
           <div className="bg-white rounded-lg shadow-sm p-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-6">活动流程</h2>
             <div className="space-y-6">
-              {mockActivityDetail.processSteps?.map((step, index) => (
+              {mockActivityDetail.processSteps?.map((step: any, index: number) => (
                 <div key={step.id} className="flex items-start space-x-6">
                   <div className="flex-shrink-0">
                     <div className="w-12 h-12 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center text-lg font-semibold">
