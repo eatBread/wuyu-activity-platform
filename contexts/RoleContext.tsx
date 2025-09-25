@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState, ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 
 type UserRole = 'STUDENT' | 'TEACHER' | 'GROUP_LEADER' | 'PRINCIPAL'
 
@@ -12,14 +12,17 @@ interface RoleContextType {
 const RoleContext = createContext<RoleContextType | undefined>(undefined)
 
 export function RoleProvider({ children }: { children: ReactNode }) {
-  const [currentRole, setCurrentRole] = useState<UserRole>(() => {
-    // 从 localStorage 读取保存的角色，如果没有则默认为 STUDENT
-    if (typeof window !== 'undefined') {
-      const savedRole = localStorage.getItem('currentRole') as UserRole
-      return savedRole || 'STUDENT'
+  const [currentRole, setCurrentRole] = useState<UserRole>('STUDENT')
+  const [isClient, setIsClient] = useState(false)
+
+  // 确保在客户端渲染后再从localStorage读取角色
+  useEffect(() => {
+    setIsClient(true)
+    const savedRole = localStorage.getItem('currentRole') as UserRole
+    if (savedRole) {
+      setCurrentRole(savedRole)
     }
-    return 'STUDENT'
-  })
+  }, [])
 
   const handleSetCurrentRole = (role: UserRole) => {
     setCurrentRole(role)
