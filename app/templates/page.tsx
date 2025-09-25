@@ -73,13 +73,43 @@ export default function TemplatesPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <Link href="/activities" className="flex items-center">
-                <ArrowLeft className="h-5 w-5 mr-2 text-gray-500" />
-                <span className="text-gray-700">返回活动广场</span>
+              <Link href="/" className="flex items-center">
+                <BookOpen className="h-8 w-8 text-primary-600" />
+                <span className="ml-2 text-xl font-bold text-gray-900">五育活动</span>
               </Link>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-500">当前角色：{currentRoleInfo?.name}</span>
+              <Link 
+                href="/activities" 
+                className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium"
+              >
+                活动广场
+              </Link>
+              <Link 
+                href="/plans" 
+                className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium"
+              >
+                活动计划
+              </Link>
+              <Link 
+                href="/templates" 
+                className="text-primary-600 px-3 py-2 rounded-md text-sm font-medium"
+              >
+                模板中心
+              </Link>
+              <div className="flex items-center space-x-2">
+                {(() => {
+                  const IconComponent = currentRoleInfo?.icon || GraduationCap
+                  return (
+                    <>
+                      <div className={`${currentRoleInfo?.color} p-1 rounded-full`}>
+                        <IconComponent className="h-3 w-3 text-white" />
+                      </div>
+                      <span className="text-sm font-medium text-gray-700">{currentRoleInfo?.name}</span>
+                    </>
+                  )
+                })()}
+              </div>
             </div>
           </div>
         </div>
