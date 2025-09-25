@@ -1,0 +1,54 @@
+// 更新后的 Prisma schema
+// 活动模型
+model Activity {
+  id          String           @id @default(cuid())
+  title       String
+  description String?          // 活动简介/描述
+  content     String?          // 活动具体内容
+  organizer   String           @default("广州华颖外国语学校") // 主办单位
+  categories  String           // JSON字符串存储多选类别
+  type        String           // COMPETITION, WORKSHOP, LECTURE, PRACTICE, EXHIBITION, PERFORMANCE, OTHER
+  grades      String           // JSON字符串存储参与年级
+  classes     String?          // JSON字符串存储参与班级
+  startDate   DateTime?
+  endDate     DateTime?
+  startTime   String?          // 开始时间
+  endTime     String?          // 结束时间
+  location    String?
+  maxParticipants Int?
+  participants Int             @default(0) // 当前参与人数
+  responsibleTeacher String?   // 负责老师
+  activityPlan String?         // 活动方案文件路径
+  coverImage  String?          // 活动封面图片路径
+  requireRegistration Boolean  @default(false) // 是否需要报名
+  observationPoints String?    // 综评观测点
+  activityDirection String?    // 活动方向
+  processSteps String?         // JSON字符串存储流程步骤
+  status      String           @default("UPCOMING") // UPCOMING, ONGOING, COMPLETED, CANCELLED
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  // 关联关系
+  creatorId   String
+  creator     User             @relation("ActivityCreator", fields: [creatorId], references: [id])
+  planId      String?
+  plan        ActivityPlan?    @relation(fields: [planId], references: [id])
+  participations Participation[]
+
+  @@map("activities")
+}
+
+// 新增：流程步骤模型
+model ProcessStep {
+  id          String   @id @default(cuid())
+  activityId  String
+  activity    Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  type        String   // content, checkin, video, questionnaire, task
+  title       String
+  order       Int
+  data        String   // JSON字符串存储步骤数据
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("process_steps")
+}

@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// 用户模型
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String
+  role      String // STUDENT, TEACHER, GROUP_LEADER, PRINCIPAL
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // 关联关系
+  createdActivities Activity[] @relation("ActivityCreator")
+  participations   Participation[]
+  createdPlans     ActivityPlan[] @relation("PlanCreator")
+  approvedPlans    ActivityPlan[] @relation("PlanApprover")
+
+  @@map("users")
+}
+
+// 活动计划模型
+model ActivityPlan {
+  id          String        @id @default(cuid())
+  title       String
+  description String?
+  category    String // MORAL_EDUCATION, ACADEMIC_LEVEL, PHYSICAL_HEALTH, ARTISTIC_LITERACY, SOCIAL_PRACTICE
+  semester    String        // 学期，如 "2024春季"
+  status      String        @default("PENDING") // PENDING, APPROVED, REJECTED
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  // 关联关系
+  creatorId   String
+  creator     User          @relation("PlanCreator", fields: [creatorId], references: [id])
+  approverId  String?
+  approver    User?         @relation("PlanApprover", fields: [approverId], references: [id])
+  activities  Activity[]
+
+  @@map("activity_plans")
+}
+
+// 活动模型
+model Activity {
+  id          String           @id @default(cuid())
+  title       String
+  description String?
+  content     String?          // 活动具体内容
+  category    String // MORAL_EDUCATION, ACADEMIC_LEVEL, PHYSICAL_HEALTH, ARTISTIC_LITERACY, SOCIAL_PRACTICE
+  type        String // COMPETITION, WORKSHOP, LECTURE, PRACTICE, EXHIBITION, PERFORMANCE, OTHER
+  startDate   DateTime?
+  endDate     DateTime?
+  location    String?
+  maxParticipants Int?
+  status      String           @default("UPCOMING") // UPCOMING, ONGOING, COMPLETED, CANCELLED
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  // 关联关系
+  creatorId   String
+  creator     User             @relation("ActivityCreator", fields: [creatorId], references: [id])
+  planId      String?
+  plan        ActivityPlan?    @relation(fields: [planId], references: [id])
+  participations Participation[]
+
+  @@map("activities")
+}
+
+// 参与记录模型
+model Participation {
+  id         String             @id @default(cuid())
+  status     String             @default("REGISTERED") // REGISTERED, PARTICIPATING, COMPLETED, ABSENT
+  joinedAt   DateTime           @default(now())
+  completedAt DateTime?
+  notes      String?            // 参与备注或成果
+
+  // 关联关系
+  userId     String
+  user       User               @relation(fields: [userId], references: [id])
+  activityId String
+  activity   Activity           @relation(fields: [activityId], references: [id])
+
+  @@unique([userId, activityId])
+  @@map("participations")
+}
