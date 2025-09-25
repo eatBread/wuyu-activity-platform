@@ -30,7 +30,7 @@ export default function TemplatesPage() {
   
   const filteredTemplates = selectedCategory === 'all' 
     ? allTemplates 
-    : getTemplatesByCategory(selectedCategory)
+    : allTemplates.filter(template => template.categories.includes(selectedCategory))
 
   // 流程环节类型图标映射
   const stepTypeIcons = {
@@ -154,8 +154,8 @@ export default function TemplatesPage() {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">活动模板中心</h1>
-              <p className="text-gray-600">选择预设的活动模板，快速创建标准化活动</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">活动模板中心</h1>
+          <p className="text-gray-600">选择预设的活动模板，快速创建标准化活动</p>
             </div>
             {/* 创建模板按钮 - 教师、组长和校长可见 */}
             {(currentRole === 'TEACHER' || currentRole === 'GROUP_LEADER' || currentRole === 'PRINCIPAL') && (
@@ -179,7 +179,7 @@ export default function TemplatesPage() {
               <div className="text-sm text-gray-600">总模板数</div>
             </div>
             {Object.entries(categoryMap).map(([key, category]) => {
-              const count = getTemplatesByCategory(key).length
+              const count = allTemplates.filter(template => template.categories.includes(key)).length
               return (
                 <div key={key} className="text-center">
                   <div className="text-2xl font-bold text-gray-900">{count}</div>
@@ -311,30 +311,30 @@ export default function TemplatesPage() {
                   <div className="flex space-x-2" onClick={(e) => e.stopPropagation()}>
                     {/* 编辑模板按钮 - 只有组长和校长可见 */}
                     {(currentRole === 'GROUP_LEADER' || currentRole === 'PRINCIPAL') && (
-                      <button
+                    <button
                         onClick={(e) => {
                           e.stopPropagation()
                           handleTemplateEdit(template.id)
-                        }}
-                        className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 flex items-center justify-center space-x-2"
-                      >
+                      }}
+                      className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 flex items-center justify-center space-x-2"
+                    >
                         <Edit className="h-4 w-4" />
                         <span>编辑模板</span>
-                      </button>
+                    </button>
                     )}
                     
                     {/* 使用模板按钮 - 教师、组长和校长可见 */}
                     {(currentRole === 'TEACHER' || currentRole === 'GROUP_LEADER' || currentRole === 'PRINCIPAL') && (
-                      <button
+                    <button
                         onClick={(e) => {
                           e.stopPropagation()
                           handleTemplateSelect(template.id)
-                        }}
-                        className="flex-1 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 flex items-center justify-center space-x-2"
-                      >
-                        <Copy className="h-4 w-4" />
-                        <span>使用模板</span>
-                      </button>
+                      }}
+                      className="flex-1 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 flex items-center justify-center space-x-2"
+                    >
+                      <Copy className="h-4 w-4" />
+                      <span>使用模板</span>
+                    </button>
                     )}
                   </div>
                 </div>
@@ -386,7 +386,7 @@ export default function TemplatesPage() {
                       {previewTemplate.categories.map((categoryKey: string) => {
                         const category = categoryMap[categoryKey as keyof typeof categoryMap]
                         if (!category) return null
-                        return (
+              return (
                           <div
                             key={categoryKey}
                             className={`w-8 h-8 rounded-full ${category.color} flex items-center justify-center text-white text-sm font-bold`}
@@ -470,12 +470,12 @@ export default function TemplatesPage() {
                               </div>
                               <p className="text-sm text-gray-600">{point.description}</p>
                             </div>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </div>
                 </div>
+              )
+            })}
+          </div>
+        </div>
+      </div>
               )}
 
               {/* 活动流程预览 */}
