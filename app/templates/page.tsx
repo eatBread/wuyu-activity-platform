@@ -97,6 +97,12 @@ export default function TemplatesPage() {
               >
                 模板中心
               </Link>
+              <Link 
+                href="/dashboard" 
+                className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium"
+              >
+                数据看板
+              </Link>
               <div className="flex items-center space-x-2">
                 {(() => {
                   const IconComponent = currentRoleInfo?.icon || GraduationCap
