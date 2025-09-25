@@ -12,10 +12,25 @@ interface RoleContextType {
 const RoleContext = createContext<RoleContextType | undefined>(undefined)
 
 export function RoleProvider({ children }: { children: ReactNode }) {
-  const [currentRole, setCurrentRole] = useState<UserRole>('STUDENT')
+  const [currentRole, setCurrentRole] = useState<UserRole>(() => {
+    // 从 localStorage 读取保存的角色，如果没有则默认为 STUDENT
+    if (typeof window !== 'undefined') {
+      const savedRole = localStorage.getItem('currentRole') as UserRole
+      return savedRole || 'STUDENT'
+    }
+    return 'STUDENT'
+  })
+
+  const handleSetCurrentRole = (role: UserRole) => {
+    setCurrentRole(role)
+    // 保存到 localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('currentRole', role)
+    }
+  }
 
   return (
-    <RoleContext.Provider value={{ currentRole, setCurrentRole }}>
+    <RoleContext.Provider value={{ currentRole, setCurrentRole: handleSetCurrentRole }}>
       {children}
     </RoleContext.Provider>
   )

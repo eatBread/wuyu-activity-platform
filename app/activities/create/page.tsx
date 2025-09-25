@@ -157,6 +157,10 @@ function CreateActivityContent() {
 
   const currentRoleInfo = roles.find(role => role.id === currentRole)
   const canCreateActivity = ['TEACHER', 'GROUP_LEADER', 'PRINCIPAL'].includes(currentRole)
+  
+  // 调试信息
+  console.log('当前角色:', currentRole)
+  console.log('是否可以创建活动:', canCreateActivity)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -249,8 +253,10 @@ function CreateActivityContent() {
   // 处理模板数据加载
   useEffect(() => {
     if (templateId) {
+      console.log('正在加载模板数据，模板ID:', templateId)
       const template = getTemplateById(templateId)
       if (template) {
+        console.log('模板数据加载成功:', template)
         // 使用模板数据填充表单
         setFormData(prev => ({
           ...prev,
@@ -272,6 +278,9 @@ function CreateActivityContent() {
           processSteps: template.templateData.processSteps,
           selectedPlans: template.templateData.selectedPlans
         }))
+        console.log('表单数据已更新为模板数据')
+      } else {
+        console.log('未找到模板数据，模板ID:', templateId)
       }
     }
   }, [templateId])
