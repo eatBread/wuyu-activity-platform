@@ -178,7 +178,9 @@ function EditActivityContent() {
         responsibleTeacher: formData.responsibleTeacher,
         activityDirection: formData.selectedPlans.length > 0 ? formData.selectedPlans[0].direction : '',
         activityPlan: formData.selectedPlans.length > 0 ? formData.selectedPlans[0].planName : '',
-        coverImage: formData.coverImage ? URL.createObjectURL(formData.coverImage) : '/images/activities/default.png'
+        coverImage: formData.coverImage ? URL.createObjectURL(formData.coverImage) : '/images/activities/default.png',
+        processSteps: formData.processSteps, // 添加流程步骤
+        observationPoints: formData.observationPoints // 添加观测点
       }
       
       // 调用更新活动函数

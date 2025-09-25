@@ -451,8 +451,8 @@ export const addNewActivity = (activityData: any, createdBy: string) => {
       coverImage: activityData.coverImage || '/images/activities/default.png',
       activityDirection: activityData.activityDirection || '',
       activityPlan: activityData.activityPlan || '',
-      processSteps: activityData.processSteps || [],
-      observationPoints: activityData.observationPoints || []
+      processSteps: activityData.processSteps !== undefined ? activityData.processSteps : [],
+      observationPoints: activityData.observationPoints !== undefined ? activityData.observationPoints : []
     }
     
     // 添加到活动列表
@@ -489,8 +489,8 @@ export const updateActivity = (activityId: string, activityData: any) => {
       coverImage: activityData.coverImage || mockActivities[index].coverImage,
       activityDirection: activityData.activityDirection || '',
       activityPlan: activityData.activityPlan || '',
-      processSteps: activityData.processSteps || mockActivities[index].processSteps || [],
-      observationPoints: activityData.observationPoints || mockActivities[index].observationPoints || []
+      processSteps: activityData.processSteps !== undefined ? activityData.processSteps : (mockActivities[index].processSteps || []),
+      observationPoints: activityData.observationPoints !== undefined ? activityData.observationPoints : (mockActivities[index].observationPoints || [])
     }
     
     console.log('活动已更新:', mockActivities[index])
