@@ -520,7 +520,7 @@ export default function ActivitiesPage() {
                         
                         {/* 类别标识 */}
                         <div className="flex flex-wrap gap-1 mb-3">
-                          {template.categories.map((categoryKey) => {
+                          {template.categories.map((categoryKey: string) => {
                             const category = categoryMap[categoryKey as keyof typeof categoryMap]
                             if (!category) return null
                             return (
