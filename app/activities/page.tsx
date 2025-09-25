@@ -407,7 +407,10 @@ export default function ActivitiesPage() {
               return (
                 <button
                   key={role.id}
-                  onClick={() => setCurrentRole(role.id as any)}
+                  onClick={() => {
+                    console.log('Switching role to:', role.id)
+                    setCurrentRole(role.id as 'STUDENT' | 'TEACHER' | 'GROUP_LEADER' | 'PRINCIPAL')
+                  }}
                   className={`w-full flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
                     currentRole === role.id
                       ? 'bg-primary-100 text-primary-700 border-2 border-primary-300'
@@ -626,7 +629,7 @@ export default function ActivitiesPage() {
                     <div className="flex items-center space-x-4 text-sm text-gray-500">
                       <div className="flex items-center space-x-1">
                         <Calendar className="h-4 w-4" />
-                        <span>{new Date(previewTemplate.createdAt).toLocaleDateString()}</span>
+                        <span>{new Date(previewTemplate.createdAt).toLocaleDateString('zh-CN', { year: 'numeric', month: 'numeric', day: 'numeric' })}</span>
                       </div>
                       <div className="flex items-center space-x-1">
                         <User className="h-4 w-4" />

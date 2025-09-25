@@ -11,8 +11,10 @@ import { categoryMap, mockPlans, getPlansWithActualActivities } from '../../lib/
 
 const statusMap = {
   'PLANNED': { name: '计划中', color: 'bg-gray-100 text-gray-800' },
+  'UPCOMING': { name: '即将开始', color: 'bg-yellow-100 text-yellow-800' },
   'ONGOING': { name: '进行中', color: 'bg-green-100 text-green-800' },
-  'COMPLETED': { name: '已完成', color: 'bg-blue-100 text-blue-800' }
+  'COMPLETED': { name: '已完成', color: 'bg-blue-100 text-blue-800' },
+  'CANCELLED': { name: '已取消', color: 'bg-red-100 text-red-800' }
 }
 
 export default function PlansPage() {
@@ -225,7 +227,7 @@ export default function PlansPage() {
                           <h3 className="text-lg font-medium text-gray-900 mb-4">{direction.name}</h3>
                           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                             {direction.activities.map((activity: any) => {
-                              const status = statusMap[activity.status as keyof typeof statusMap]
+                              const status = statusMap[activity.status as keyof typeof statusMap] || { name: '未知状态', color: 'bg-gray-100 text-gray-800' }
                               return (
                                 <Link 
                                   key={activity.id} 
