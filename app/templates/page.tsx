@@ -1,16 +1,17 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, BookOpen, Heart, Palette, Globe, UserCheck, Crown, GraduationCap, FileText, Play, ClipboardList, Target, Eye, Copy, Calendar, User, Plus, Edit } from 'lucide-react'
 import { useRole } from '../../contexts/RoleContext'
-import { getAllTemplates, getTemplatesByCategory, categoryMap } from '../../lib/mockData'
+import { getAllTemplates, getTemplatesByCategory, categoryMap, observationPoints } from '../../lib/mockData'
 
 export default function TemplatesPage() {
   const { currentRole, setCurrentRole } = useRole()
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [showPreviewModal, setShowPreviewModal] = useState(false)
   const [previewTemplate, setPreviewTemplate] = useState<any>(null)
+  const [allTemplates, setAllTemplates] = useState<any[]>([])
   
   const roles = [
     { id: 'STUDENT', name: '学生', icon: GraduationCap, color: 'bg-blue-500' },
@@ -22,7 +23,11 @@ export default function TemplatesPage() {
   const currentRoleInfo = roles.find(role => role.id === currentRole)
   
   // 获取模板数据
-  const allTemplates = getAllTemplates()
+  useEffect(() => {
+    const templates = getAllTemplates()
+    setAllTemplates(templates)
+  }, [])
+  
   const filteredTemplates = selectedCategory === 'all' 
     ? allTemplates 
     : getTemplatesByCategory(selectedCategory)
@@ -245,7 +250,7 @@ export default function TemplatesPage() {
                   />
                   {/* 类别标识 */}
                   <div className="absolute top-3 left-3 flex space-x-1">
-                    {template.categories.map((categoryKey) => {
+                    {template.categories.map((categoryKey: string) => {
                       const category = categoryMap[categoryKey as keyof typeof categoryMap]
                       if (!category) return null
                       return (
@@ -270,12 +275,12 @@ export default function TemplatesPage() {
                   <div className="mb-4">
                     <h4 className="text-sm font-medium text-gray-700 mb-2">包含环节：</h4>
                     <div className="flex flex-wrap gap-1">
-                      {template.templateData.processSteps.slice(0, 4).map((step, index) => {
-                        const Icon = stepTypeIcons[step.type]
+                      {template.templateData.processSteps.slice(0, 4).map((step: any, index: number) => {
+                        const Icon = stepTypeIcons[step.type as keyof typeof stepTypeIcons]
                         return (
                           <div
                             key={step.id}
-                            className={`${stepTypeColors[step.type]} text-white px-2 py-1 rounded text-xs flex items-center space-x-1`}
+                            className={`${stepTypeColors[step.type as keyof typeof stepTypeColors]} text-white px-2 py-1 rounded text-xs flex items-center space-x-1`}
                           >
                             <Icon className="h-3 w-3" />
                             <span>{step.title}</span>
@@ -438,6 +443,40 @@ export default function TemplatesPage() {
                   </div>
                 </div>
               </div>
+
+              {/* 综评观测点预览 */}
+              {previewTemplate.templateData.observationPoints && previewTemplate.templateData.observationPoints.length > 0 && (
+                <div className="mb-6">
+                  <h4 className="text-lg font-semibold text-gray-900 mb-3">综评观测点</h4>
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="grid grid-cols-1 gap-3">
+                      {previewTemplate.templateData.observationPoints.map((pointId: string) => {
+                        // 从观测点数据中查找对应的观测点信息
+                        const point = observationPoints.find(p => p.id === pointId)
+                        if (!point) return null
+                        
+                        const category = categoryMap[point.category as keyof typeof categoryMap]
+                        return (
+                          <div key={pointId} className="flex items-start space-x-3 p-3 bg-white rounded-lg border border-gray-200">
+                            <div className={`w-8 h-8 rounded-full ${category?.color || 'bg-gray-500'} flex items-center justify-center text-white text-sm font-bold flex-shrink-0`}>
+                              {pointId}
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-center space-x-2 mb-1">
+                                <h5 className="font-medium text-gray-900">{point.name}</h5>
+                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${category?.color || 'bg-gray-500'} text-white`}>
+                                  {category?.name || '未知类别'}
+                                </span>
+                              </div>
+                              <p className="text-sm text-gray-600">{point.description}</p>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* 活动流程预览 */}
               <div className="mb-6">

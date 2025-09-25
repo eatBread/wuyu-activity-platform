@@ -84,7 +84,55 @@ export const mockActivities = [
     participants: 450,
     coverImage: '/images/activities/2.png',
     activityDirection: '习惯养成类',
-    activityPlan: '2024-2025学年下学期思想品德活动计划'
+    activityPlan: '2024-2025学年下学期思想品德活动计划',
+    observationPoints: ['2', '3', '4'], // 观测点2、3、4
+    processSteps: [
+      {
+        id: 'step_1',
+        type: 'content' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
+        title: '活动介绍',
+        order: 0,
+        data: {
+          content: '<p>欢迎参加文明班级评比活动！本次活动旨在培养同学们的文明行为习惯，营造良好的班级氛围。</p>',
+          images: []
+        }
+      },
+      {
+        id: 'step_2',
+        type: 'checkin' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
+        title: '文明班级评比签到',
+        order: 1,
+        data: {
+          description: '请同学们按时签到，确认参与文明班级评比活动'
+        }
+      },
+      {
+        id: 'step_3',
+        type: 'questionnaire' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
+        title: '文明行为自评',
+        order: 2,
+        data: {
+          title: '文明行为自评问卷',
+          description: '请同学们根据自身表现进行文明行为自评',
+          questions: [
+            {
+              id: 'q_1',
+              type: 'single',
+              title: '你是否经常使用文明用语？',
+              options: ['总是', '经常', '有时', '很少'],
+              placeholder: ''
+            },
+            {
+              id: 'q_2',
+              type: 'single',
+              title: '你是否主动维护班级卫生？',
+              options: ['总是', '经常', '有时', '很少'],
+              placeholder: ''
+            }
+          ]
+        }
+      }
+    ]
   },
   {
     id: '2',
@@ -101,7 +149,52 @@ export const mockActivities = [
     participants: 0,
     coverImage: '/images/activities/4.png',
     activityDirection: '常规活动',
-    activityPlan: '2024-2025学年下学期身心健康活动计划'
+    activityPlan: '2024-2025学年下学期身心健康活动计划',
+    observationPoints: ['11', '12', '13'], // 观测点11、12、13
+    processSteps: [
+      {
+        id: 'step_1',
+        type: 'content' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
+        title: '比赛规则介绍',
+        order: 0,
+        data: {
+          content: '<p>欢迎参加班级拔河比赛！比赛规则如下：</p><ul><li>每班派出10名同学参赛</li><li>比赛采用三局两胜制</li><li>注意安全，听从裁判指挥</li></ul>',
+          images: []
+        }
+      },
+      {
+        id: 'step_2',
+        type: 'checkin' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
+        title: '班级拔河比赛签到',
+        order: 1,
+        data: {
+          description: '请参赛同学按时签到，确认参与班级拔河比赛'
+        }
+      },
+      {
+        id: 'step_3',
+        type: 'video' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
+        title: '拔河技巧教学',
+        order: 2,
+        data: {
+          title: '拔河技巧教学视频',
+          description: '观看拔河技巧教学视频，学习正确的拔河姿势和技巧',
+          videoFile: null
+        }
+      },
+      {
+        id: 'step_4',
+        type: 'task' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
+        title: '比赛总结',
+        order: 3,
+        data: {
+          title: '比赛总结任务',
+          type: 'text',
+          requirements: '请同学们写一份比赛总结，包括比赛感受、团队合作体验等',
+          images: []
+        }
+      }
+    ]
   }
 ]
 
@@ -357,7 +450,9 @@ export const addNewActivity = (activityData: any, createdBy: string) => {
       participants: 0,
       coverImage: activityData.coverImage || '/images/activities/default.png',
       activityDirection: activityData.activityDirection || '',
-      activityPlan: activityData.activityPlan || ''
+      activityPlan: activityData.activityPlan || '',
+      processSteps: activityData.processSteps || [],
+      observationPoints: activityData.observationPoints || []
     }
     
     // 添加到活动列表
@@ -393,7 +488,9 @@ export const updateActivity = (activityId: string, activityData: any) => {
       creator: activityData.responsibleTeacher,
       coverImage: activityData.coverImage || mockActivities[index].coverImage,
       activityDirection: activityData.activityDirection || '',
-      activityPlan: activityData.activityPlan || ''
+      activityPlan: activityData.activityPlan || '',
+      processSteps: activityData.processSteps || mockActivities[index].processSteps || [],
+      observationPoints: activityData.observationPoints || mockActivities[index].observationPoints || []
     }
     
     console.log('活动已更新:', mockActivities[index])
@@ -493,7 +590,7 @@ export const mockTemplates: ActivityTemplate[] = [
       processSteps: [
         {
           id: 'step1',
-          type: 'content',
+          type: 'content' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '比赛介绍',
           order: 0,
           data: {
@@ -503,7 +600,7 @@ export const mockTemplates: ActivityTemplate[] = [
         },
         {
           id: 'step2',
-          type: 'checkin',
+          type: 'checkin' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '体育竞赛活动签到',
           order: 1,
           data: {
@@ -512,7 +609,7 @@ export const mockTemplates: ActivityTemplate[] = [
         },
         {
           id: 'step3',
-          type: 'content',
+          type: 'content' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '比赛规则说明',
           order: 2,
           data: {
@@ -522,7 +619,7 @@ export const mockTemplates: ActivityTemplate[] = [
         },
         {
           id: 'step4',
-          type: 'video',
+          type: 'video' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '技巧教学',
           order: 3,
           data: {
@@ -532,7 +629,7 @@ export const mockTemplates: ActivityTemplate[] = [
         },
         {
           id: 'step5',
-          type: 'task',
+          type: 'task' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '活动总结提交',
           order: 4,
           data: {
@@ -573,7 +670,7 @@ export const mockTemplates: ActivityTemplate[] = [
       processSteps: [
         {
           id: 'step1',
-          type: 'content',
+          type: 'content' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '活动介绍',
           order: 0,
           data: {
@@ -583,7 +680,7 @@ export const mockTemplates: ActivityTemplate[] = [
         },
         {
           id: 'step2',
-          type: 'checkin',
+          type: 'checkin' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '德育教育活动签到',
           order: 1,
           data: {
@@ -592,7 +689,7 @@ export const mockTemplates: ActivityTemplate[] = [
         },
         {
           id: 'step3',
-          type: 'content',
+          type: 'content' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '主题教育',
           order: 2,
           data: {
@@ -602,7 +699,7 @@ export const mockTemplates: ActivityTemplate[] = [
         },
         {
           id: 'step4',
-          type: 'questionnaire',
+          type: 'questionnaire' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '品德认知问卷',
           order: 3,
           data: {
@@ -635,7 +732,7 @@ export const mockTemplates: ActivityTemplate[] = [
         },
         {
           id: 'step5',
-          type: 'task',
+          type: 'task' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '反思总结',
           order: 4,
           data: {
@@ -676,7 +773,7 @@ export const mockTemplates: ActivityTemplate[] = [
       processSteps: [
         {
           id: 'step1',
-          type: 'content',
+          type: 'content' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: 'AI科普介绍',
           order: 0,
           data: {
@@ -686,7 +783,7 @@ export const mockTemplates: ActivityTemplate[] = [
         },
         {
           id: 'step2',
-          type: 'checkin',
+          type: 'checkin' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: 'AI科普活动签到',
           order: 1,
           data: {
@@ -695,7 +792,7 @@ export const mockTemplates: ActivityTemplate[] = [
         },
         {
           id: 'step3',
-          type: 'content',
+          type: 'content' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: 'AI基础知识学习',
           order: 2,
           data: {
@@ -705,7 +802,7 @@ export const mockTemplates: ActivityTemplate[] = [
         },
         {
           id: 'step4',
-          type: 'video',
+          type: 'video' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: 'AI科普视频',
           order: 3,
           data: {
@@ -715,7 +812,7 @@ export const mockTemplates: ActivityTemplate[] = [
         },
         {
           id: 'step5',
-          type: 'task',
+          type: 'task' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '黑板报制作任务',
           order: 4,
           data: {
@@ -756,7 +853,7 @@ export const mockTemplates: ActivityTemplate[] = [
       processSteps: [
         {
           id: 'step1',
-          type: 'content',
+          type: 'content' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '合唱比赛介绍',
           order: 0,
           data: {
@@ -766,7 +863,7 @@ export const mockTemplates: ActivityTemplate[] = [
         },
         {
           id: 'step2',
-          type: 'checkin',
+          type: 'checkin' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '合唱比赛签到',
           order: 1,
           data: {
@@ -775,7 +872,7 @@ export const mockTemplates: ActivityTemplate[] = [
         },
         {
           id: 'step3',
-          type: 'content',
+          type: 'content' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '合唱基础知识',
           order: 2,
           data: {
@@ -785,7 +882,7 @@ export const mockTemplates: ActivityTemplate[] = [
         },
         {
           id: 'step4',
-          type: 'video',
+          type: 'video' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '合唱教学视频',
           order: 3,
           data: {
@@ -795,7 +892,7 @@ export const mockTemplates: ActivityTemplate[] = [
         },
         {
           id: 'step5',
-          type: 'task',
+          type: 'task' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '合唱排练任务',
           order: 4,
           data: {
@@ -836,7 +933,7 @@ export const mockTemplates: ActivityTemplate[] = [
       processSteps: [
         {
           id: 'step1',
-          type: 'content',
+          type: 'content' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '职业见习介绍',
           order: 0,
           data: {
@@ -846,7 +943,7 @@ export const mockTemplates: ActivityTemplate[] = [
         },
         {
           id: 'step2',
-          type: 'checkin',
+          type: 'checkin' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '职业见习签到',
           order: 1,
           data: {
@@ -855,7 +952,7 @@ export const mockTemplates: ActivityTemplate[] = [
         },
         {
           id: 'step3',
-          type: 'content',
+          type: 'content' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '企业文化和职业介绍',
           order: 2,
           data: {
@@ -865,7 +962,7 @@ export const mockTemplates: ActivityTemplate[] = [
         },
         {
           id: 'step4',
-          type: 'video',
+          type: 'video' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '职业体验视频',
           order: 3,
           data: {
@@ -875,7 +972,7 @@ export const mockTemplates: ActivityTemplate[] = [
         },
         {
           id: 'step5',
-          type: 'task',
+          type: 'task' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '职业体验总结',
           order: 4,
           data: {
@@ -916,7 +1013,7 @@ export const mockTemplates: ActivityTemplate[] = [
       processSteps: [
         {
           id: 'step1',
-          type: 'content',
+          type: 'content' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '微电影大赛介绍',
           order: 0,
           data: {
@@ -926,7 +1023,7 @@ export const mockTemplates: ActivityTemplate[] = [
         },
         {
           id: 'step2',
-          type: 'checkin',
+          type: 'checkin' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '微电影大赛签到',
           order: 1,
           data: {
@@ -935,7 +1032,7 @@ export const mockTemplates: ActivityTemplate[] = [
         },
         {
           id: 'step3',
-          type: 'content',
+          type: 'content' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '微电影创作知识',
           order: 2,
           data: {
@@ -945,7 +1042,7 @@ export const mockTemplates: ActivityTemplate[] = [
         },
         {
           id: 'step4',
-          type: 'video',
+          type: 'video' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '微电影创作教学',
           order: 3,
           data: {
@@ -955,7 +1052,7 @@ export const mockTemplates: ActivityTemplate[] = [
         },
         {
           id: 'step5',
-          type: 'task',
+          type: 'task' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '微电影创作任务',
           order: 4,
           data: {
@@ -996,7 +1093,7 @@ export const mockTemplates: ActivityTemplate[] = [
       processSteps: [
         {
           id: 'step1',
-          type: 'content',
+          type: 'content' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '垃圾分类宣传介绍',
           order: 0,
           data: {
@@ -1006,7 +1103,7 @@ export const mockTemplates: ActivityTemplate[] = [
         },
         {
           id: 'step2',
-          type: 'checkin',
+          type: 'checkin' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '垃圾分类宣传签到',
           order: 1,
           data: {
@@ -1015,7 +1112,7 @@ export const mockTemplates: ActivityTemplate[] = [
         },
         {
           id: 'step3',
-          type: 'content',
+          type: 'content' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '垃圾分类知识学习',
           order: 2,
           data: {
@@ -1025,7 +1122,7 @@ export const mockTemplates: ActivityTemplate[] = [
         },
         {
           id: 'step4',
-          type: 'video',
+          type: 'video' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '环保宣传视频',
           order: 3,
           data: {
@@ -1035,7 +1132,7 @@ export const mockTemplates: ActivityTemplate[] = [
         },
         {
           id: 'step5',
-          type: 'task',
+          type: 'task' as 'content' | 'checkin' | 'video' | 'questionnaire' | 'task',
           title: '垃圾分类宣传实践',
           order: 4,
           data: {
@@ -1053,15 +1150,66 @@ export const mockTemplates: ActivityTemplate[] = [
 
 // 获取所有模板
 export const getAllTemplates = () => {
-  return mockTemplates
+  try {
+    // 从 localStorage 获取用户创建的模板
+    const userTemplates = JSON.parse(localStorage.getItem('userTemplates') || '[]')
+    
+    // 合并系统模板和用户模板
+    const allTemplates = [...mockTemplates, ...userTemplates]
+    
+    // 按创建时间排序（最新的在前）
+    return allTemplates.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+  } catch (error) {
+    console.error('获取用户模板失败:', error)
+    return mockTemplates
+  }
 }
 
 // 根据ID获取模板
 export const getTemplateById = (templateId: string) => {
-  return mockTemplates.find(template => template.id === templateId)
+  // 先在系统模板中查找
+  let template = mockTemplates.find(template => template.id === templateId)
+  
+  // 如果没找到，在用户模板中查找
+  if (!template) {
+    try {
+      const userTemplates = JSON.parse(localStorage.getItem('userTemplates') || '[]')
+      template = userTemplates.find((template: ActivityTemplate) => template.id === templateId)
+    } catch (error) {
+      console.error('获取用户模板失败:', error)
+    }
+  }
+  
+  return template
 }
 
 // 根据类别获取模板
 export const getTemplatesByCategory = (category: string) => {
-  return mockTemplates.filter(template => template.categories.includes(category))
+  const allTemplates = getAllTemplates()
+  return allTemplates.filter(template => template.categories.includes(category))
+}
+
+// 创建新模板
+export const addNewTemplate = (templateData: Omit<ActivityTemplate, 'id' | 'createdAt'>) => {
+  const newTemplate: ActivityTemplate = {
+    id: `template-${Date.now()}`,
+    createdAt: new Date().toISOString().split('T')[0],
+    ...templateData
+  }
+  
+  // 添加到模板列表
+  mockTemplates.push(newTemplate)
+  
+  // 保存到 localStorage
+  try {
+    const existingTemplates = JSON.parse(localStorage.getItem('userTemplates') || '[]')
+    existingTemplates.push(newTemplate)
+    localStorage.setItem('userTemplates', JSON.stringify(existingTemplates))
+    console.log('模板已保存到本地存储')
+  } catch (error) {
+    console.error('保存模板到本地存储失败:', error)
+  }
+  
+  console.log('新模板已创建:', newTemplate)
+  return newTemplate
 }
