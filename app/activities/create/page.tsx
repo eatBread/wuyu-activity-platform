@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, BookOpen, Heart, Palette, Globe, UserCheck, Crown, GraduationCap, Settings, List, Users, Award, FileText, Play, ClipboardList, Target, Plus, Trash2, Edit, GripVertical, CheckCircle } from 'lucide-react'
 import { useRole } from '../../../contexts/RoleContext'
@@ -74,7 +74,8 @@ const processStepTypes = [
   }
 ]
 
-export default function CreateActivityPage() {
+// 包装组件处理 useSearchParams
+function CreateActivityContent() {
   const { currentRole, setCurrentRole } = useRole()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -3001,5 +3002,21 @@ export default function CreateActivityPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+// 主组件，使用Suspense包装
+export default function CreateActivityPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">加载中...</p>
+        </div>
+      </div>
+    }>
+      <CreateActivityContent />
+    </Suspense>
   )
 }
